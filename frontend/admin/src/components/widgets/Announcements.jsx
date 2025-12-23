@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { BACKEND_URL } from "./config";
 
 export default function Announcements() {
   const [text, setText] = useState("");
@@ -10,7 +11,7 @@ export default function Announcements() {
       .map((t) => t.trim())
       .filter(Boolean);
 
-    await axios.post("http://localhost:5000/update-widget", {
+    await axios.post(`${BACKEND_URL}/update-widget`, {
       widget: "announcements",
       data: announcements
     });

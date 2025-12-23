@@ -1,6 +1,7 @@
 import { useState } from "react";
 import GridLayout from "react-grid-layout";
 import axios from "axios";
+import { BACKEND_URL } from "./config";
 
 import Announcements from "./widgets/Announcements";
 import Drives from "./widgets/Drives";
@@ -47,7 +48,7 @@ export default function LayoutEditor() {
   };
 
   const pushToTV = async () => {
-    await axios.post("http://localhost:5000/update-layout", { layout });
+    await axios.post(`${BACKEND_URL}/update-layout`, { layout });
     alert("Layout pushed to TV");
   };
 

@@ -1,12 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
+import { BACKEND_URL } from "./config";
 
 export default function PdfSlideshow() {
   const [url, setUrl] = useState("");
   const [interval, setInterval] = useState(5);
 
   const save = async () => {
-    await axios.post("http://localhost:5000/update-widget", {
+    await axios.post(`${BACKEND_URL}/update-widget`, {
       widget: "pdfslideshow",
       data: { url, interval }
     });
