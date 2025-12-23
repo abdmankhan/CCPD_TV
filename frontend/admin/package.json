@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "deploy": "npm run build && gh-pages -d dist -b gh-pages -o admin -r https://github.com/Vaibhav8844/CCPD_TV.git"
+    "deploy": "npm run build && gh-pages --dist dist --branch gh-pages --dest admin --repo https://github.com/Vaibhav8844/CCPD_TV.git"
   },
   "dependencies": {
     "axios": "^1.6.8",
