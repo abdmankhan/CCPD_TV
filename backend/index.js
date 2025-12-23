@@ -1,64 +1,47 @@
-const express = require("express");
-const http = require("http");
-const { Server } = require("socket.io");
-const cors = require("cors");
-const dashboardState = require("./dashboardState");
-const PORT = process.env.PORT || 5000;
+import express from "express";
+import http from "http";
+import cors from "cors";
+import { Server } from "socket.io";
 
 const app = express();
-// app.use(cors({ origin: "*" }));
-const corsOptions = {
-  origin: [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "https://vaibhav8844.github.io"
-  ],
-  methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type"]
-};
-app.use(cors(corsOptions));
-// app.options("*", cors(corsOptions));
+const server = http.createServer(app);
+
+/* =========================
+   CORS
+   ========================= */
+app.use(cors({
+  origin: "https://vaibhav8844.github.io",
+  methods: ["GET", "POST"]
+}));
+
 app.use(express.json());
 
-const server = http.createServer(app);
-// const io = new Server(server, { cors: { origin: "*" } });
+/* =========================
+   SOCKET.IO
+   ========================= */
 const io = new Server(server, {
   cors: {
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:5174",
-      "https://vaibhav8844.github.io"
-    ],
+    origin: "https://vaibhav8844.github.io",
     methods: ["GET", "POST"]
   }
 });
 
 io.on("connection", (socket) => {
-  console.log("TV connected");
-  socket.emit("INIT_STATE", dashboardState);
+  console.log("Client connected:", socket.id);
 });
 
-app.post("/update-layout", (req, res) => {
-  dashboardState.layout = req.body.layout;
-  io.emit("DASHBOARD_UPDATE", dashboardState);
-  res.send({ success: true });
-});
-
-server.listen(PORT, () => {
-  console.log("Backend running on port 5000");
-});
-
+/* =========================
+   API
+   ========================= */
 app.post("/update-widget", (req, res) => {
-  const { widget, data } = req.body;
+  io.emit("DASHBOARD_UPDATE", req.body);
+  res.json({ success: true });
+});
 
-  console.log("Update widget:", widget, data);
-
-  if (!dashboardState.widgets[widget]) {
-    return res.status(400).send({ error: "Invalid widget" });
-  }
-
-  dashboardState.widgets[widget] = data;
-  io.emit("DASHBOARD_UPDATE", dashboardState);
-
-  res.send({ success: true });
+/* =========================
+   START SERVER
+   ========================= */
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+  console.log("Backend running on port", PORT);
 });
