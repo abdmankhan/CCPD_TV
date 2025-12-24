@@ -1,1 +1,1 @@
-export const BACKEND_URL = "https://ccpdtv-production.up.railway.app";
+export const BACKEND_URL = "https://ccpd-tv.onrender.com/";
