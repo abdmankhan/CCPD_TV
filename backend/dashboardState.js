@@ -9,6 +9,8 @@ const dashboardState = {
       url: "",
       interval: 5,
     },
+    youtube: {},
+    mediaSlideshow: []
   },
   urgent_alert: null,
 };

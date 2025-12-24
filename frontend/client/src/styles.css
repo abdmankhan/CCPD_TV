@@ -49,7 +49,7 @@ body {
 ========================= */
 
 .tv-header {
-  height: 2.5rem;
+  height: 3.5rem;
   background: #020617;
   color: #e5e7eb;
   font-size: 1.1rem;
@@ -118,12 +118,30 @@ body {
    DRIVES
 ========================= */
 
-.drive {
-  display: flex;
-  justify-content: space-between;
-  font-size: 20px;
-  margin-bottom: 6px;
+.widget.drives {
+  padding: 1rem;
+  background: #0e0e0e;
+  color: white;
 }
+
+.drive-item {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #333;
+}
+
+.company {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.details {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
 
 /* =========================
    SPOTLIGHT
@@ -147,4 +165,34 @@ body {
 .stat {
   font-size: 22px;
   margin-bottom: 8px;
+}
+
+/* =========================
+   Media SLIDESHOW WIDGET
+========================= */
+.media-slideshow {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.media-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;   /* 👈 IMPORTANT for mixed aspect ratios */
+}
+
+.media-pdf {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.media-slideshow.empty {
+  color: #94a3b8;
+  font-size: 1.2rem;
 }

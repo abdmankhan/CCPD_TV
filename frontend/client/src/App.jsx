@@ -7,6 +7,8 @@ import Drives from "./widgets/Drives";
 import Spotlight from "./widgets/Spotlight";
 import Stats from "./widgets/Stats";
 import PdfSlideshow from "./widgets/PdfSlideshow";
+import YoutubePlayer from "./widgets/YoutubePlayer";
+import MediaSlideshow from "./widgets/MediaSlideshow";
 
 import logoLeft from "../src/assets/NITW_Logo2.png";
 
@@ -17,18 +19,33 @@ const WIDGETS = {
   drives: Drives,
   spotlight: Spotlight,
   stats: Stats,
-  pdfslideshow: PdfSlideshow
+  pdfslideshow: PdfSlideshow,
+  youtube: YoutubePlayer,
+  mediaSlideshow: MediaSlideshow
 };
 
 export default function App() {
   const [layout, setLayout] = useState([]);
   const [widgets, setWidgets] = useState({});
+  const [header, setHeader] = useState({});
 
   useEffect(() => {
+    socket.on("INIT_STATE", (state) => {
+    setLayout(state.layout || []);
+    setWidgets(state.widgets || {});
+    setHeader(state.header || {});
+  });
+
     socket.on("DASHBOARD_UPDATE", (state) => {
       setLayout(state.layout || []);
       setWidgets(state.widgets || {});
+      setHeader(state.header || {});
     });
+
+    return () => {
+    socket.off("INIT_STATE");
+    socket.off("DASHBOARD_UPDATE");
+  };
   }, []);
 
   return (

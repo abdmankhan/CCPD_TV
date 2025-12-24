@@ -8,6 +8,9 @@
 
 html {
   font-size: 16px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 body {
@@ -15,6 +18,7 @@ body {
   font-family: system-ui, sans-serif;
   background: #020617;
   color: #e5e7eb;
+  overflow: hidden;
 }
 
 /* =========================
@@ -33,11 +37,19 @@ body {
 
 .palette {
   width: 18rem;
+  height: 100%;
   background: #020617;
   border-right: 0.0625rem solid #1e293b;
   padding: 1rem;
   display: flex;
   flex-direction: column;
+}
+
+.palette-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .palette h4 {
@@ -71,7 +83,7 @@ body {
 
 /* Push button */
 .palette .push {
-  margin-top: auto;
+  margin-top: 0.75rem;
   background: linear-gradient(135deg, #22c55e, #16a34a);
   border: none;
   font-weight: 600;
@@ -84,8 +96,15 @@ body {
 .canvas {
   flex: 1;
   padding: 1rem;
-  overflow: auto;
+  overflow: hidden;              /* 🔴 IMPORTANT */
+  background: repeating-linear-gradient(
+    0deg,
+    #020617,
+    #020617 89px,
+    #020617 90px
+  );
 }
+
 
 /* =========================
    WIDGET
@@ -126,4 +145,96 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* =========================
+   Drives WIDGET
+========================= */
+.widget.drives {
+  padding: 1rem;
+  background: #0e0e0e;
+  color: white;
+}
+
+.drive-item {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #333;
+}
+
+.company {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.details {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+/* =========================
+   Media WIDGET
+========================= */
+.editor.media-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.media-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.media-form input,
+.media-form select {
+  flex: 1;
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  color: #e5e7eb;
+  padding: 0.4rem;
+  border-radius: 0.25rem;
+}
+
+.media-form button {
+  background: #1e293b;
+  border: none;
+  color: #e5e7eb;
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+}
+
+.media-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.media-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #020617;
+  border: 1px solid #1e293b;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.media-item .actions button {
+  margin-left: 0.25rem;
+  background: transparent;
+  border: 1px solid #334155;
+  color: #e5e7eb;
+  cursor: pointer;
+}
+
+.editor .save {
+  margin-top: 0.5rem;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  padding: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
 }

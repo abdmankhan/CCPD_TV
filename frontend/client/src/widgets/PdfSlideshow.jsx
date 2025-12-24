@@ -1,60 +1,31 @@
-import { useEffect, useRef, useState } from "react";
-import * as pdfjsLib from "pdfjs-dist";
-import pdfWorker from "pdfjs-dist/build/pdf.worker?url";
-
-// Required for pdf.js
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+import { useEffect, useState } from "react";
 
 export default function PdfSlideshow({ data }) {
-  const canvasRef = useRef(null);
-  const [pdf, setPdf] = useState(null);
-  const [page, setPage] = useState(1);
-
-  const interval = data?.interval ?? 5; // seconds
-  const pdfUrl = data?.url;
-
-  useEffect(() => {
-    if (!pdfUrl) return;
-
-    pdfjsLib.getDocument(pdfUrl).promise.then(setPdf);
-  }, [pdfUrl]);
-
-  useEffect(() => {
-    if (!pdf) return;
-
-    const renderPage = async () => {
-      const p = await pdf.getPage(page);
-      const viewport = p.getViewport({ scale: 1.5 });
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
-
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-
-      await p.render({ canvasContext: ctx, viewport }).promise;
-    };
-
-    renderPage();
-
-    const timer = setTimeout(() => {
-      setPage((prev) =>
-        prev >= pdf.numPages ? 1 : prev + 1
-      );
-    }, interval * 1000);
-
-    return () => clearTimeout(timer);
-  }, [pdf, page, interval]);
-
-  if (!pdfUrl) {
-    return <h2>No PDF selected</h2>;
+  if (!data || !data.images || data.images.length === 0) {
+    return <div className="widget empty">No slides</div>;
   }
 
+  const { images, interval = 5 } = data;
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((i) => (i + 1) % images.length);
+    }, interval * 1000);
+
+    return () => clearInterval(timer);
+  }, [images, interval]);
+
   return (
-    <div style={{ width: "100%", height: "100%" }}>
-      <canvas
-        ref={canvasRef}
-        style={{ width: "100%", height: "100%" }}
-      />
-    </div>
+    <img
+      src={images[index]}
+      alt="Slide"
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "contain",
+        backgroundColor: "black"
+      }}
+    />
   );
 }
