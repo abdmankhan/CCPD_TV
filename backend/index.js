@@ -36,6 +36,10 @@ io.on("connection", (socket) => {
 });
 
 // ---------- APIs ----------
+app.get("/dashboard-state", (req, res) => {
+  res.json(dashboardState);
+});
+
 app.post("/update-layout", (req, res) => {
   dashboardState.layout = req.body.layout;
   io.emit("DASHBOARD_UPDATE", dashboardState);

@@ -1,90 +1,48 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { BACKEND_URL } from "../../config";
+import { useDashboard } from "../../context/DashboardContext";
+import DrivesEditorModal from "../modals/DrivesEditorModal";
 
-export default function Drives() {
-  const [drives, setDrives] = useState([]);
+export default function DrivesWidget() {
+  const { dashboard } = useDashboard();
+  const [open, setOpen] = useState(false);
 
-  const [company, setCompany] = useState("");
-  const [role, setRole] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
-  const [venue, setVenue] = useState("");
-
-  const addDrive = () => {
-    if (!company) {
-      alert("Company name is required");
-      return;
-    }
-
-    setDrives([
-      ...drives,
-      { company, role, date, time, venue }
-    ]);
-
-    setCompany("");
-    setRole("");
-    setDate("");
-    setTime("");
-    setVenue("");
-  };
-
-  const saveDrives = async () => {
-    await axios.post(`${BACKEND_URL}/update-widget`, {
-      widget: "drives",
-      data: drives
-    });
-
-    alert("Drives updated on TV");
-  };
+  const drives = dashboard?.widgets?.drives || [];
 
   return (
-    <div className="editor drives-editor">
-      <h4>Placement Drives</h4>
+    <div className="editor-box drives-widget">
+      <div className="widget-header">
+        <h4>Scheduled Drives</h4>
+      </div>
 
-      <input
-        placeholder="Company *"
-        value={company}
-        onChange={(e) => setCompany(e.target.value)}
-      />
+      <div className="widget-body">
+        {drives.length === 0 ? (
+          <p className="muted">No drives added</p>
+        ) : (
+          <ul className="drive-summary">
+            {drives.slice(0, 3).map((d, i) => (
+              <li key={i}>
+                <strong>{d.company}</strong>
+                {d.date && <span> — {d.date}</span>}
+              </li>
+            ))}
+            {drives.length > 3 && (
+              <li className="more">
+                +{drives.length - 3} more
+              </li>
+            )}
+          </ul>
+        )}
+      </div>
 
-      <input
-        placeholder="Role"
-        value={role}
-        onChange={(e) => setRole(e.target.value)}
-      />
+      <div className="widget-footer">
+        <button className="edit-btn" onClick={() => setOpen(true)}>
+          ✏️ Edit Drives
+        </button>
+      </div>
 
-      <input
-        placeholder="Date (e.g. 25 Sept 2025)"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-      />
-
-      <input
-        placeholder="Time (e.g. 10:00 AM)"
-        value={time}
-        onChange={(e) => setTime(e.target.value)}
-      />
-
-      <input
-        placeholder="Venue"
-        value={venue}
-        onChange={(e) => setVenue(e.target.value)}
-      />
-
-      <button onClick={addDrive}>Add Drive</button>
-
-      <ul>
-        {drives.map((d, i) => (
-          <li key={i}>
-            {d.company} {d.date && `– ${d.date}`} {d.time && `– ${d.time}`}
-          </li>
-        ))}
-      </ul>
-
-      <button className="save" onClick={saveDrives}>
-        Save to TV
-      </button>
+      {open && <DrivesEditorModal onClose={() => setOpen(false)} />}
     </div>
   );
 }

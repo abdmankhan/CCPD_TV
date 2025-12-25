@@ -1,11 +1,25 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import axios from "axios";
 import { BACKEND_URL } from "../../config";
+import { useDashboard } from "../../context/DashboardContext";
 
 export default function PdfSlideshow() {
   const [file, setFile] = useState(null);
   const [interval, setIntervalTime] = useState(5);
   const [loading, setLoading] = useState(false);
+  const { dashboard } = useDashboard();
+
+  useEffect(() => {
+  if (!dashboard) return;
+
+  const widget = dashboard.widgets?.pdfslideshow;
+  if (!widget) return;
+
+  if (widget.interval) {
+    setIntervalTime(widget.interval);
+  }
+
+}, [dashboard]);
 
   const uploadAndSave = async () => {
     if (!file) {
@@ -20,16 +34,13 @@ export default function PdfSlideshow() {
     try {
       setLoading(true);
 
-      // 1️⃣ Upload PDF → backend converts to images
       const res = await axios.post(
         `${BACKEND_URL}/upload-file`,
         form
       );
 
-      // Backend returns image slides
       const images = res.data.items.map(i => i.url);
 
-      // 2️⃣ Send images to TV (same widget as before)
       await axios.post(`${BACKEND_URL}/update-widget`, {
         widget: "pdfslideshow",
         data: {
@@ -52,14 +63,12 @@ export default function PdfSlideshow() {
     <div className="editor">
       <h4>PDF Slideshow</h4>
 
-      {/* PDF Picker */}
       <input
         type="file"
         accept="application/pdf"
         onChange={(e) => setFile(e.target.files[0])}
       />
 
-      {/* Interval */}
       <input
         type="number"
         min="1"

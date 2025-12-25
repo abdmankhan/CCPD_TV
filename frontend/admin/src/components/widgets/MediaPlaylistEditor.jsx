@@ -1,13 +1,31 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import axios from "axios";
 import { BACKEND_URL } from "../../config";
 import PlaylistEditorModal from "../modals/PlaylistEditorModal";
+import { useDashboard } from "../../context/DashboardContext";
 
 export default function MediaPlaylistWidget() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
   const [open, setOpen] = useState(false);
+  const { dashboard } = useDashboard();
+  useEffect(() => {
+    if (!dashboard) return;
+
+    const slides = dashboard.widgets?.mediaSlideshow;
+    if (!slides || slides.length === 0) return;
+
+    setItems(
+      slides.map((s) => ({
+        id: crypto.randomUUID(),
+        sourceType: "image",
+        backendUrl: s.url,
+        duration: s.duration,
+        previewUrl: s.url,
+      }))
+    );
+  }, [dashboard]);
 
   const uploadImage = async (file) => {
     const form = new FormData();
@@ -25,7 +43,7 @@ export default function MediaPlaylistWidget() {
         {
           id: crypto.randomUUID(),
           sourceType: "image",
-          previewUrl: URL.createObjectURL(file), 
+          previewUrl: URL.createObjectURL(file),
           backendUrl: res.data.items[0].url,
           duration: 6,
         },
