@@ -70,7 +70,7 @@ app.post("/clear-widgets",requireAuth,requireRole(["EDITOR"]), (req, res) => {
   // Object.keys(dashboardState.widgets).forEach(key => {
   //   dashboardState.widgets[key] = [];
   // });
-
+  dashboardState.layout = [];
   io.emit("DASHBOARD_UPDATE", dashboardState);
   res.send({ success: true });
 });
