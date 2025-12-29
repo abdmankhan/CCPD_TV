@@ -32,20 +32,11 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Serve uploaded videos
-app.use('/uploads', express.static('./uploads', {
-  setHeaders: (res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-  }
-}));
-
 app.use(authRoutes);
 app.use(tvRoutes);
 
 // ---------- Startup tmp cleanup (recommended) ----------
 await fs.ensureDir("./tmp");
-await fs.ensureDir("./uploads/videos");
-await fs.ensureDir("./uploads/audio");
 
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
@@ -178,15 +169,15 @@ app.post("/upload-audio",requireAuth,requireRole(["EDITOR"]), upload.single("fil
       return res.status(400).send({ error: "Only audio files (.mp3, .wav, .ogg, .m4a) are allowed" });
     }
 
-    // Generate unique filename
+    // Generate unique filename for GitHub
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`;
-    const audioPath = path.join("./uploads/audio", filename);
+    const remotePath = `audio/${filename}`;
 
-    // Move file to permanent location
-    await fs.move(file.path, audioPath);
+    // Upload to GitHub
+    const audioUrl = await uploadImageToGithub(file.path, remotePath);
 
-    // Return URL accessible from frontend
-    const audioUrl = `/uploads/audio/${filename}`;
+    // Clean up temporary file
+    await fs.remove(file.path);
 
     res.send({
       success: true,
@@ -216,15 +207,15 @@ app.post("/upload-video",requireAuth,requireRole(["EDITOR"]), upload.single("fil
       return res.status(400).send({ error: "Only video files (.mp4, .webm, .ogg, .mov) are allowed" });
     }
 
-    // Generate unique filename
+    // Generate unique filename for GitHub
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`;
-    const videoPath = path.join("./uploads/videos", filename);
+    const remotePath = `videos/${filename}`;
 
-    // Move file to permanent location
-    await fs.move(file.path, videoPath);
+    // Upload to GitHub
+    const videoUrl = await uploadImageToGithub(file.path, remotePath);
 
-    // Return URL accessible from frontend
-    const videoUrl = `/uploads/videos/${filename}`;
+    // Clean up temporary file
+    await fs.remove(file.path);
 
     res.send({
       success: true,
