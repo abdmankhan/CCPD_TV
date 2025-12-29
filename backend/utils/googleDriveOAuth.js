@@ -8,14 +8,17 @@ const __dirname = path.dirname(__filename);
 const TOKEN_PATH = path.join(__dirname, '../google-drive-token.json');
 
 export function createOAuth2Client() {
+  const redirectUri = process.env.GOOGLE_OAUTH_REDIRECT_URI || 'http://localhost:5000/oauth2callback';
+  console.log('🔧 Creating OAuth client with:');
+  console.log('   Client ID:', process.env.GOOGLE_OAUTH_CLIENT_ID);
+  console.log('   Redirect URI:', redirectUri);
+  
   return new google.auth.OAuth2(
     process.env.GOOGLE_OAUTH_CLIENT_ID,
     process.env.GOOGLE_OAUTH_CLIENT_SECRET,
-    process.env.GOOGLE_OAUTH_REDIRECT_URI || 'http://localhost:5000/oauth2callback'
+    redirectUri
   );
 }
-
-console.log('GOOGLE_OAUTH_CLIENT_ID:', process.env.GOOGLE_OAUTH_CLIENT_ID);
 
 export function getAuthUrl() {
   const oauth2Client = createOAuth2Client();
@@ -24,11 +27,14 @@ export function getAuthUrl() {
     'https://www.googleapis.com/auth/drive'
   ];
 
-  return oauth2Client.generateAuthUrl({
+  const authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: scopes,
     prompt: 'consent'
   });
+  
+  console.log('🔗 Generated auth URL:', authUrl);
+  return authUrl;
 }
 
 export function saveToken(token) {
