@@ -15,6 +15,8 @@ export function createOAuth2Client() {
   );
 }
 
+console.log('GOOGLE_OAUTH_CLIENT_ID:', process.env.GOOGLE_OAUTH_CLIENT_ID);
+
 export function getAuthUrl() {
   const oauth2Client = createOAuth2Client();
   const scopes = [
