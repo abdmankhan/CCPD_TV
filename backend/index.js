@@ -177,8 +177,8 @@ app.post("/update-widget",requireAuth, async (req, res) => {
 
   dashboardState.widgets[widget] = data;
   
-  // Notify connected clients
-  io.emit("DASHBOARD_UPDATE", dashboardState);
+  // Notify connected clients - use WIDGET_UPDATE to preserve layout
+  io.emit("WIDGET_UPDATE", { widgets: dashboardState.widgets });
   
   // Auto-save to Drive
   saveDashboardState(dashboardState).catch(err => 
