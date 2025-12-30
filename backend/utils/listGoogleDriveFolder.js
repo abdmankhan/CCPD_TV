@@ -34,9 +34,9 @@ export async function listGoogleDriveFolder(folderPath) {
       return [];
     }
 
-    const port = process.env.PORT || 5000;
+    const backendUrl = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5000}`;
     return filesResponse.data.files.map(file => 
-      `http://localhost:${port}/proxy/drive/${file.id}`
+      `${backendUrl}/proxy/drive/${file.id}`
     );
   } catch (error) {
     console.error("Google Drive list folder error:", error);

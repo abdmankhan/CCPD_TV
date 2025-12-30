@@ -83,7 +83,8 @@ export async function uploadToGoogleDrive(filePath, remotePath, parentFolderId =
       },
     });
 
-    return `http://localhost:${process.env.PORT || 5000}/proxy/drive/${fileId}`;
+    const backendUrl = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5000}`;
+    return `${backendUrl}/proxy/drive/${fileId}`;
   } catch (error) {
     console.error("Google Drive upload error:", error);
     throw new Error("Google Drive upload failed: " + error.message);
