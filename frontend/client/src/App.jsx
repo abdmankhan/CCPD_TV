@@ -63,6 +63,7 @@ export default function App() {
           src={logoLeft}
           alt="Left Logo"
           className="tv-logo left"
+          style={{ marginRight: '20px' }}
         />
         Center for Career Planning and Development
       </header>
