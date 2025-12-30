@@ -123,10 +123,15 @@ function LayoutEditor({initialState}) {
 
   useEffect(() => {
     const handleUpdate = (state) => {
-      if (state.layout) {
-        setLayout(state.layout);
-        if (state.layoutTemplate) {
+      if (state && typeof state === 'object') {
+        // Update layout info if present (could be empty array)
+        if ('layout' in state) {
+          setLayout(state.layout || []);
+        }
+        if ('layoutTemplate' in state) {
           setLayoutTemplate(state.layoutTemplate);
+        }
+        if ('widgetSlots' in state) {
           setWidgetSlots(state.widgetSlots || {});
         }
       }
