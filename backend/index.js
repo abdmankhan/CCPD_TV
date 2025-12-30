@@ -451,16 +451,19 @@ app.post("/upload-file",requireAuth,requireRole(["EDITOR"]), upload.single("file
   }
 });
 
-// ---------- Load Dashboard State ----------
+// ---------- Load Dashboard State & Start Server ----------
 (async () => {
+  // Load state BEFORE starting server
   const savedState = await loadDashboardState();
   if (savedState) {
     Object.assign(dashboardState, savedState);
     console.log("✓ Dashboard state restored from backup");
+  } else {
+    console.log("✓ Using default dashboard state");
   }
-})();
 
-// ---------- Start Server ----------
-server.listen(PORT, "0.0.0.0", () => {
-  console.log("Backend running on port " + PORT);
-});
+  // Start server only after state is loaded
+  server.listen(PORT, "0.0.0.0", () => {
+    console.log("Backend running on port " + PORT);
+  });
+})();
