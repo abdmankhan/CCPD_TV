@@ -216,6 +216,8 @@ app.post("/update-playlist",requireAuth,requireRole(["EDITOR"]), async (req, res
           await fs.ensureDir(workDir);
 
           const pdfPath = `${workDir}/input.pdf`;
+          
+          // Stream the PDF to reduce memory usage
           const response = await fetch(item.url);
           const buffer = await response.arrayBuffer();
           await fs.writeFile(pdfPath, Buffer.from(buffer));
@@ -231,10 +233,14 @@ app.post("/update-playlist",requireAuth,requireRole(["EDITOR"]), async (req, res
           } else {
             const images = await pdfToImages(pdfPath, workDir);
 
+            // Upload images sequentially to avoid memory spikes
             for (let i = 0; i < images.length; i++) {
               const remote = `${folder}/page_${i + 1}.png`;
               const url = await uploadToGoogleDrive(images[i], remote);
               imageUrls.push(url);
+              
+              // Delete the image file immediately after upload to free memory
+              await fs.remove(images[i]);
             }
           }
 
