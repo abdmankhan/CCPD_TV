@@ -37,19 +37,20 @@ export default function Announcements() {
   };
 
   return (
-    <div className="widget-container">
+    <div className="widget-container" style={{ height: 'auto', overflow: 'visible' }}>
       <div className="widget-header">
         <h4>Announcements</h4>
       </div>
 
-      <div className="widget-body">
+      <div className="widget-body" style={{ overflow: 'visible', flex: 'none' }}>
         <textarea
           className="widget-textarea"
-          rows={6}
-          placeholder="One announcement per line\nExample:\n- Training session tomorrow at 10 AM\n- Interview preparation workshop this Friday"
+          rows={Math.max(6, text.split('\n').length + 1)}
+          placeholder={`One announcement per line\nExample:\n- Training session tomorrow at 10 AM`}
           value={text}
           onChange={(e) => setText(e.target.value)}
           disabled={loading}
+          style={{ resize: 'none', overflow: 'hidden' }}
         />
       </div>
 
